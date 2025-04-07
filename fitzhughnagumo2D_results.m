@@ -1,7 +1,7 @@
 clear all
 close all
 
-methods = ["ERK2ds","ERK2","Lawson2","IMEX2_LU","IMEX2_Sylvester","ode23tb","ode23"];
+methods = ["ERK2ds","ERK2","Lawson2","IMEX2_LU","IMEX2_Sylvester","IMEX2_Sylvester_eig","ode23tb","ode23"];
 
 R = cell(1,length(methods));
 T = R;
@@ -37,7 +37,7 @@ for ii = 1:length(methods)
     disp(T{ii})
 end
 figure
-markers = {'o-','+-','*-','>-','<-','x-','^-'};
+markers = {'o-','+-','*-','>-','<-','-v','x-','^-'};
 hold on 
 for ii = 1:length(methods)
     loglog(R{ii}(:,2),R{ii}(:,3),markers{ii},'LineWidth',2)

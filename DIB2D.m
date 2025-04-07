@@ -18,6 +18,7 @@ tol_phiks = 1e-3;
 % Lawson2, m = [3750,4500,5250,6000] 
 % IMEX2_LU, m = [1250,1500,1750,2000]
 % IMEX2_Sylvester, m = [1250,1500,1750,2000]
+% IMEX2_Sylvester_eig, m = [1250,1500,1750,2000]
 % ode23tb, tol = [5e-5,3e-5,2e-5,1e-5]
 % ode23, tol = [9e-4,8e-4,7e-4,6e-4]
 %
@@ -112,6 +113,11 @@ switch method
     case 'IMEX2_Sylvester'
         tic
         [U,V] = IMEX2_2D_sylvester(U0,V0,T/m,m,Au,Av,gu,gv);
+        time = toc;
+        name = ['result_',method,'_',num2str(m),'.mat'];
+    case 'IMEX2_Sylvester_eig'
+        tic
+        [U,V] = IMEX2_2D_sylvester_eig(U0,V0,T/m,m,Au,Av,du,dv,gu,gv,n,h);
         time = toc;
         name = ['result_',method,'_',num2str(m),'.mat'];
     case 'ode23tb'

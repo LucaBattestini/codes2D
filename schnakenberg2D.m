@@ -3,12 +3,12 @@ close all
 
 addpath(genpath(fileparts(which('schnakenberg2D.m'))))
 
-method = 'ERK2';
+method = 'ERK2ds';
 error = true;
 save_res = false;
 
 T = 0.25; 
-m = 6000;
+m = 3000;
 tol = 5e-8;
 tol_phiks = 1e-4;
 
@@ -18,6 +18,7 @@ tol_phiks = 1e-4;
 % Lawson2, m = [14000,18000,22000,26000]
 % IMEX2_LU, m = [3000,4000,5000,6000]
 % IMEX2_Sylvester, m = [3000,4000,5000,6000]
+% IMEX2_Sylvester_eig, m = [3000,4000,5000,6000]
 % ode23tb, tol = [1e-6,5e-7,1e-7,5e-8] 
 % ode23, tol = [1e-2,8e-3,4e-3,1e-3]
 %
@@ -77,6 +78,8 @@ options.OutputFcn = @(t,u,flag) myoutfcn(t,u,flag,T);
 options.Jacobian = @(t,w) [Ku+spdiags(dgudu(t,w),0,N,N),spdiags(dgudv(t,w),0,N,N);...
     spdiags(dgvdu(t,w),0,N,N),Kv+spdiags(dgvdv(t,w),0,N,N)];
 
+disp(['Method: ',method])
+
 switch method
     case 'ERK2ds'
         tic
@@ -103,6 +106,11 @@ switch method
     case 'IMEX2_Sylvester'
         tic
         [U,V] = IMEX2_2D_sylvester(U0,V0,T/m,m,Au,Av,gu,gv);
+        time = toc;
+        name = ['result_',method,'_',num2str(m),'.mat'];
+    case 'IMEX2_Sylvester_eig'
+        tic
+        [U,V] = IMEX2_2D_sylvester_eig(U0,V0,T/m,m,Au,Av,du,dv,gu,gv,n,h);
         time = toc;
         name = ['result_',method,'_',num2str(m),'.mat'];
     case 'ode23tb'
