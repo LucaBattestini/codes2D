@@ -15,23 +15,20 @@ for ii = 1:length(methods)
         R{ii}(jj,1) = results.par;
         R{ii}(jj,2) = results.time;
         R{ii}(jj,3) = results.err;
-        if ~strcmp(methods(ii),"ode23tb") && ~strcmp(methods(ii),"ode23")
-            if jj ~= 1
-                R{ii}(jj,4) = -log(R{ii}(jj,3)/R{ii}(jj-1,3))/log(R{ii}(jj,1)/R{ii}(jj-1,1));
-            else
-                R{ii}(jj,4) = NaN;
-            end
-        end
     end
     if ~strcmp(methods(ii),"ode23tb") && ~strcmp(methods(ii),"ode23")
+        [~,id] = sort(R{ii}(:,1),'ascend');
+        R{ii} = R{ii}(id,:);
+        R{ii}(:,4) = NaN(length(files),1);
+        R{ii}(2:end,4) = -diff(log(R{ii}(:,3)))./diff(log(R{ii}(:,1)));
         T{ii} = table(char(compose('%d',R{ii}(:,1))),char(compose('%.2f',R{ii}(:,2))),...
-            char(compose('%.3e',R{ii}(:,3))),char(compose('%.2f',R{ii}(:,4))),...
+            char(compose('%.2e',R{ii}(:,3))),char(compose('%.2f',R{ii}(:,4))),...
             'VariableNames',{'m','time (s)','error','order'});
     else
         [~,id] = sort(R{ii}(:,1),'descend');
         R{ii} = R{ii}(id,:);
         T{ii} = table(char(compose('%.0e',R{ii}(:,1))),char(compose('%.2f',R{ii}(:,2))),...
-            char(compose('%.3e',R{ii}(:,3))),'VariableNames',{'tolerance','time (s)','error'});
+            char(compose('%.2e',R{ii}(:,3))),'VariableNames',{'tolerance','time (s)','error'});
     end
     T{ii} = table(T{ii},'VariableNames',{char(methods(ii))});
     disp(T{ii})
